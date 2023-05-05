@@ -3,7 +3,6 @@ from uuid import uuid4
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
 from score.utils import DIFICULTY_CHOICES
 
 
@@ -35,5 +34,7 @@ class Score(models.Model):
         return f"{self.score} - {self.player.username}"
 
     def save(self, *args, **kwargs):
-        self.player.save()
         super(Score, self).save(*args, **kwargs)
+        # update player max_score
+        if self.score > self.player.max_score:
+            self.player.save()
